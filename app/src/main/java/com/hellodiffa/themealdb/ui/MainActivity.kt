@@ -1,7 +1,8 @@
-package com.hellodiffa.themealdb
+package com.hellodiffa.themealdb.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.hellodiffa.themealdb.R
 
 class MainActivity : AppCompatActivity() {
 
