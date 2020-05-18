@@ -1,7 +1,7 @@
 package com.hellodiffa.themealdb.di
 
-import com.hellodiffa.themealdb.network.ApiService
-import com.hellodiffa.themealdb.network.RequestInterceptor
+import com.hellodiffa.themealdb.data.network.ApiService
+import com.hellodiffa.themealdb.data.network.RequestInterceptor
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import retrofit2.Retrofit

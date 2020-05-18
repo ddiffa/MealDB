@@ -1,7 +1,7 @@
 package com.hellodiffa.themealdb.di
 
 import androidx.room.Room
-import com.hellodiffa.themealdb.persistence.AppDatabase
+import com.hellodiffa.themealdb.data.persistence.AppDatabase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 

@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 data class MealResponse(
 
     @field:SerializedName("categories")
-    val categories: List<CategoriesItem?>? = null
+    val categories: List<CategoriesItem>
 )
 
 @Parcelize
@@ -24,7 +24,7 @@ data class CategoriesItem(
 
     @PrimaryKey(autoGenerate = false)
     @field:SerializedName("idCategory")
-    val idCategory: String? = null,
+    val idCategory: String,
 
     @field:SerializedName("strCategoryThumb")
     val strCategoryThumb: String? = null

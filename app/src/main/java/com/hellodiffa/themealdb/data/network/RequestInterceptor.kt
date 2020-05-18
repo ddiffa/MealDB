@@ -1,4 +1,4 @@
-package com.hellodiffa.themealdb.network
+package com.hellodiffa.themealdb.data.network
 
 import okhttp3.Interceptor
 import okhttp3.Response

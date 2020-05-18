@@ -1,4 +1,4 @@
-package com.hellodiffa.themealdb.persistence
+package com.hellodiffa.themealdb.data.persistence
 
 import androidx.room.Dao
 import androidx.room.Insert

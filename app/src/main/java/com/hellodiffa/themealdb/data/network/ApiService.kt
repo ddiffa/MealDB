@@ -1,4 +1,4 @@
-package com.hellodiffa.themealdb.network
+package com.hellodiffa.themealdb.data.network
 
 import com.hellodiffa.themealdb.model.MealResponse
 import retrofit2.Response

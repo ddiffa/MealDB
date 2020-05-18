@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseAdapter<D, VH : BaseViewHolder<D>, B : ViewDataBinding> :
     RecyclerView.Adapter<VH>() {
+
     var dataSource: List<D> = emptyList()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
-    private lateinit var mViewDataBinding: B
+    protected lateinit var mViewDataBinding: B
 
     override fun getItemCount(): Int = dataSource.size
 
@@ -24,8 +25,8 @@ abstract class BaseAdapter<D, VH : BaseViewHolder<D>, B : ViewDataBinding> :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val inflater = LayoutInflater.from(parent.context)
-        val mBind = DataBindingUtil.inflate<B>(inflater, getLayoutResourceId(), parent, false)
-        return instantiateViewHolder(mBind)
+        mViewDataBinding = DataBindingUtil.inflate<B>(inflater, getLayoutResourceId(), parent, false)
+        return instantiateViewHolder(mViewDataBinding)
     }
 
     abstract fun instantiateViewHolder(binding: B): VH
