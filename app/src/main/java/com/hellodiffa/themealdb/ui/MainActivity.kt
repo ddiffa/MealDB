@@ -25,10 +25,6 @@ class MainActivity : BaseActivity() {
             adapter = mAdapter
         }
 
-        viewModel.apply {
-            fetchingCategoryList()
-        }
-
         viewModel.categoriesListLiveData.observe(this, Observer {
             when (it.status) {
                 ResultState.Status.SUCCESS -> {
@@ -41,6 +37,9 @@ class MainActivity : BaseActivity() {
                 }
                 ResultState.Status.ERROR -> {
                     binding.progressBar.visibility = View.GONE
+                    if (!it.data.isNullOrEmpty()){
+                        mAdapter.dataSource = it.data
+                    }
                     Toast.makeText(applicationContext, it.message, Toast.LENGTH_SHORT).show()
                 }
             }

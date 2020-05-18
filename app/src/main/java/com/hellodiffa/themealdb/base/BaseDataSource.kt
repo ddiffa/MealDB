@@ -1,8 +1,11 @@
 package com.hellodiffa.themealdb.base
 
+import android.accounts.NetworkErrorException
 import com.hellodiffa.themealdb.common.ResultState
+import okio.IOException
 import retrofit2.Response
 import timber.log.Timber
+import java.util.concurrent.TimeoutException
 
 abstract class BaseDataSource {
 
@@ -16,12 +19,18 @@ abstract class BaseDataSource {
 
             return error("${response.code()} ${response.message()}")
         } catch (e: Exception) {
-            return error(e.message ?: e.toString())
+            return when(e){
+                is IOException -> error("No internet connection!")
+                is TimeoutException -> error("Connection Timeout!")
+                is NetworkErrorException -> error("Network Error!")
+                else -> error(e.message ?: e.toString())
+            }
+
         }
     }
 
     private fun <T> error(message: String): ResultState<T> {
         Timber.e(message)
-        return ResultState.error("Network call has failed for a following reason : $message")
+        return ResultState.error(message)
     }
 }

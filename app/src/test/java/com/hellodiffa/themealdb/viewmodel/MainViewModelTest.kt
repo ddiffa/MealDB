@@ -2,6 +2,7 @@ package com.hellodiffa.themealdb.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import com.hellodiffa.themealdb.MainCoroutinesRule
 import com.hellodiffa.themealdb.MockTestUtil
 import com.hellodiffa.themealdb.common.ResultState
@@ -9,12 +10,8 @@ import com.hellodiffa.themealdb.data.network.ApiService
 import com.hellodiffa.themealdb.data.network.RemoteDataSource
 import com.hellodiffa.themealdb.data.persistence.MealDao
 import com.hellodiffa.themealdb.data.repository.MainRepository
-import com.hellodiffa.themealdb.model.CategoriesItem
 import com.hellodiffa.themealdb.ui.MainViewModel
-import com.nhaarman.mockitokotlin2.atLeastOnce
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -49,19 +46,23 @@ class MainViewModelTest {
 
     @Test
     fun fetchCategoriesListTest() = runBlocking {
-        val mockData = MockTestUtil.mockMeal()
+        val mockData = MockTestUtil.mockMeal().categories
 
-        whenever(dao.getCategoryList()).thenReturn(mockData.categories)
+        whenever(dao.getCategoryList()).thenReturn(mockData)
 
-        val fetchedData = mainRepository.loadCategoriesMeal()
-        val observer: Observer<ResultState<List<CategoriesItem>>> = mock()
+        val fetchedData = mainRepository.loadCategoriesFlow().asLiveData()
+
+        val observer: Observer<ResultState<Any?>> = mock()
 
         fetchedData.observeForever(observer)
 
-        viewModel.fetchingCategoryList()
-
         verify(dao, atLeastOnce()).getCategoryList()
-        verify(observer).onChanged(ResultState.success(mockData.categories))
+
+        if (fetchedData.value?.status == ResultState.Status.LOADING) {
+            verify(observer, times(1)).onChanged(ResultState.loading())
+        } else if (fetchedData.value?.status == ResultState.Status.SUCCESS) {
+            verify(observer).onChanged(ResultState.success(mockData))
+        }
         fetchedData.removeObserver(observer)
     }
 }

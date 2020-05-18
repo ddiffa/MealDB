@@ -2,6 +2,7 @@ package com.hellodiffa.themealdb.persistence
 
 import com.hellodiffa.themealdb.MockTestUtil
 import com.hellodiffa.themealdb.data.persistence.MealDao
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -22,7 +23,7 @@ class MealDaoTest : LocalDatabase() {
     }
 
     @Test
-    fun insertAndLoadCategoriesListTest() {
+    fun insertAndLoadCategoriesListTest()  {
         val mockDataList = MockTestUtil.mockMeal()
 
         mealDao.insertCategoryList(mockDataList.categories)
@@ -31,6 +32,6 @@ class MealDaoTest : LocalDatabase() {
         assertThat(loadFromDB.toString(), `is`(mockDataList.categories.toString()))
 
         val mockData = MockTestUtil.mockMeal()
-        assertThat(loadFromDB[0].toString(), `is`(mockData.categories[0].toString()))
+        assertThat(loadFromDB?.get(0)?.toString(), `is`(mockData.categories[0].toString()))
     }
 }

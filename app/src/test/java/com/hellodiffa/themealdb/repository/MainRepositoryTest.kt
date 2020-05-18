@@ -1,17 +1,19 @@
 package com.hellodiffa.themealdb.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import com.hellodiffa.themealdb.MainCoroutinesRule
 import com.hellodiffa.themealdb.MockTestUtil
 import com.hellodiffa.themealdb.common.ResultState
-import com.hellodiffa.themealdb.data.network.ApiService
 import com.hellodiffa.themealdb.data.network.RemoteDataSource
 import com.hellodiffa.themealdb.data.persistence.MealDao
 import com.hellodiffa.themealdb.data.repository.MainRepository
-import com.hellodiffa.themealdb.model.CategoriesItem
-import com.hellodiffa.themealdb.network.ApiUtil.getCall
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -28,7 +30,7 @@ class MainRepositoryTest {
     private lateinit var repository: MainRepository
 
     @Mock
-    private lateinit var remote : RemoteDataSource
+    private lateinit var remote: RemoteDataSource
 
     private val dao: MealDao = mock()
 
@@ -57,16 +59,20 @@ class MainRepositoryTest {
         whenever(dao.getCategoryList()).thenReturn(emptyList())
         whenever(remote.loadMealList()).thenReturn(ResultState.success(mockData))
 
-        val loadData = repository.loadCategoriesMeal()
+        val loadData = MutableLiveData<ResultState<Any>>()
 
-        val observer : Observer<ResultState<List<CategoriesItem>>> = mock()
+        repository.loadCategoriesFlow().asLiveData().map {
+            loadData.postValue(ResultState.success(it))
+        }
+        val observer: Observer<ResultState<Any>> = mock()
         loadData.observeForever(observer)
 
-        val updatedData = MockTestUtil.mockMeal()
-        whenever(dao.getCategoryList()).thenReturn(updatedData.categories)
+        val updatedData = MockTestUtil.mockMeal().categories
 
-        loadData.postValue(ResultState.success(updatedData.categories))
-        verify(observer).onChanged(ResultState.success(updatedData.categories))
+        whenever(dao.getCategoryList()).thenReturn(updatedData)
+
+        loadData.postValue(ResultState.success(updatedData))
+        verify(observer).onChanged(ResultState.success(updatedData))
         loadData.removeObserver(observer)
 
     }
