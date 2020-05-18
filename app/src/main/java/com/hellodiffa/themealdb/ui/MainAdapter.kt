@@ -18,10 +18,10 @@ class MainAdapter : BaseAdapter<CategoriesItem, Holder, ItemMealBinding>() {
     inner class Holder(private val binding: ItemMealBinding) :
         BaseViewHolder<CategoriesItem>(binding) {
 
-        override fun onBind(item: CategoriesItem) {
-            ViewCompat.setTransitionName(binding.itemContainer, item.strCategory)
-            binding.meal = item
-            binding.executePendingBindings()
+        override fun onBind(item: CategoriesItem) = binding.apply {
+            ViewCompat.setTransitionName(itemContainer, item.strCategory)
+            meal = item
+            executePendingBindings()
         }
 
     }
