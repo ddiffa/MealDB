@@ -2,9 +2,9 @@ package com.hellodiffa.themealdb.data.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.hellodiffa.themealdb.common.ResultState
-import com.hellodiffa.themealdb.model.CategoriesItem
 import com.hellodiffa.themealdb.data.network.RemoteDataSource
 import com.hellodiffa.themealdb.data.persistence.MealDao
+import com.hellodiffa.themealdb.model.CategoriesItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -22,13 +22,15 @@ class MainRepository constructor(
     suspend fun loadCategoriesMeal() = withContext(Dispatchers.IO) {
 
         val lvData = MutableLiveData<ResultState<List<CategoriesItem>>>()
-        var meal = dao.getCategoryList()
+        var meal: List<CategoriesItem>? = dao.getCategoryList()
         lvData.postValue(ResultState.loading())
         delay(1_500)
-        if (meal.isEmpty() && (remote.loadMealList().status == ResultState.Status.SUCCESS)) {
-            meal = remote.loadMealList().data?.categories!!
-            lvData.postValue(ResultState.success(remote.loadMealList().data!!.categories))
-            dao.insertCategoryList(remote.loadMealList().data?.categories!!)
+        if (dao.getCategoryList()
+                .isEmpty() && (remote.loadMealList().status == ResultState.Status.SUCCESS)
+        ) {
+            meal = remote.loadMealList().data?.categories
+            lvData.postValue(ResultState.success(remote.loadMealList().data?.categories))
+            dao.insertCategoryList(remote.loadMealList().data?.categories)
         } else {
             lvData.postValue(ResultState.error(remote.loadMealList().message))
         }

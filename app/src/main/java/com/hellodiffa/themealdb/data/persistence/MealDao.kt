@@ -11,7 +11,7 @@ import com.hellodiffa.themealdb.model.CategoriesItem
 interface MealDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCategoryList(category: List<CategoriesItem>)
+    fun insertCategoryList(category: List<CategoriesItem>?)
 
     @Query("SELECT * FROM CategoriesItem WHERE idCategory=:id")
     fun getCategory(id : String) : CategoriesItem

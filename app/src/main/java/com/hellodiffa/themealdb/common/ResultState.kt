@@ -4,7 +4,7 @@ data class ResultState<out T>(val status: Status, val data: T?, val message: Str
 
     companion object {
 
-        fun <T> success(data: T): ResultState<T> =
+        fun <T> success(data: T?): ResultState<T> =
             ResultState(status = Status.SUCCESS, data = data, message = null)
 
         fun <T> error(message: String?, data: T? = null): ResultState<T> =
