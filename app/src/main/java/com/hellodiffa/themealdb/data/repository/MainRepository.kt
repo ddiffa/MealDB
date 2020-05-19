@@ -1,5 +1,6 @@
 package com.hellodiffa.themealdb.data.repository
 
+import androidx.lifecycle.SavedStateHandle
 import com.hellodiffa.themealdb.data.network.RemoteDataSource
 import com.hellodiffa.themealdb.data.persistence.MealDao
 import com.hellodiffa.themealdb.utils.resultFlow
@@ -14,9 +15,10 @@ class MainRepository constructor(
         Timber.d("Injection MainRepository")
     }
 
-    suspend fun loadCategoriesFlow() = resultFlow(
-        databaseQuery = { dao.getCategoryList() },
-        networkCall = { remote.loadMealList() },
-        saveCallResult = { dao.insertCategoryList(it.categories) }
-    )
+    suspend fun loadCategoriesFlow() =
+        resultFlow(
+            databaseQuery = { dao.getCategoryList() },
+            networkCall = { remote.loadMealList() },
+            saveCallResult = { dao.insertCategoryList(it.categories) }
+        )
 }
